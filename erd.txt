@@ -1,0 +1,101 @@
+users [icon: user, color: blue] {
+  id UUID pk
+  email string
+  username string
+  hashed_password string
+  role string
+  is_active boolean
+  first_name string
+  last_name string
+  created_at timestamp
+  updated_at timestamp
+}
+
+categories [icon: folder, color: orange] {
+  id UUID pk
+  name string
+  description string
+}
+
+courses [icon: book, color: green] {
+  id UUID pk
+  instructor_id UUID fk
+  category_id UUID fk
+  title string
+  description string
+  price float
+  is_published boolean
+  thumbnail_url string
+  created_at timestamp
+  updated_at timestamp
+}
+
+lessons [icon: file-text, color: green] {
+  id UUID pk
+  course_id UUID fk
+  title string
+  content string
+  video_url string
+  order integer
+  created_at timestamp
+}
+
+enrollments [icon: user-check, color: purple] {
+  id UUID pk
+  student_id UUID fk
+  course_id UUID fk
+  status string
+  enrolled_at timestamp
+  completed_at timestamp
+}
+
+assignments [icon: clipboard, color: red] {
+  id UUID pk
+  course_id UUID fk
+  title string
+  description string
+  due_date timestamp
+  max_score float
+  created_at timestamp
+}
+
+submissions [icon: upload, color: red] {
+  id UUID pk
+  student_id UUID fk
+  assignment_id UUID fk
+  content string
+  score float
+  feedback string
+  status string
+  submitted_at timestamp
+}
+
+reviews [icon: star, color: yellow] {
+  id UUID pk
+  student_id UUID fk
+  course_id UUID fk
+  rating integer
+  comment string
+  created_at timestamp
+}
+
+refresh_tokens [icon: key, color: gray] {
+  id UUID pk
+  user_id UUID fk
+  token string
+  expires_at timestamp
+  created_at timestamp
+}
+
+// Relationships
+users.id < courses.instructor_id
+categories.id < courses.category_id
+courses.id < lessons.course_id
+users.id < enrollments.student_id
+courses.id < enrollments.course_id
+courses.id < assignments.course_id
+assignments.id < submissions.assignment_id
+users.id < submissions.student_id
+users.id < reviews.student_id
+courses.id < reviews.course_id
+users.id < refresh_tokens.user_id

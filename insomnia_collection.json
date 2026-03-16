@@ -1,0 +1,244 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-03-16T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app",
+  "resources": [
+    {
+      "_id": "wrk_001",
+      "_type": "workspace",
+      "name": "Online Learning Platform"
+    },
+    {
+      "_id": "env_001",
+      "_type": "environment",
+      "parentId": "wrk_001",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:8000/api/v1",
+        "access_token": "",
+        "refresh_token": "",
+        "course_id": "",
+        "lesson_id": "",
+        "category_id": "",
+        "enrollment_id": "",
+        "assignment_id": "",
+        "submission_id": "",
+        "review_id": "",
+        "user_id": ""
+      }
+    },
+
+    { "_id": "fld_auth",        "_type": "request_group", "parentId": "wrk_001", "name": "Auth"        },
+    { "_id": "fld_users",       "_type": "request_group", "parentId": "wrk_001", "name": "Users"       },
+    { "_id": "fld_categories",  "_type": "request_group", "parentId": "wrk_001", "name": "Categories"  },
+    { "_id": "fld_courses",     "_type": "request_group", "parentId": "wrk_001", "name": "Courses"     },
+    { "_id": "fld_lessons",     "_type": "request_group", "parentId": "wrk_001", "name": "Lessons"     },
+    { "_id": "fld_enrollments", "_type": "request_group", "parentId": "wrk_001", "name": "Enrollments" },
+    { "_id": "fld_assignments", "_type": "request_group", "parentId": "wrk_001", "name": "Assignments" },
+    { "_id": "fld_submissions", "_type": "request_group", "parentId": "wrk_001", "name": "Submissions" },
+    { "_id": "fld_reviews",     "_type": "request_group", "parentId": "wrk_001", "name": "Reviews"     },
+
+    {
+      "_id": "req_register", "_type": "request", "parentId": "fld_auth",
+      "name": "Register", "method": "POST", "url": "{{ base_url }}/auth/register",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"email\": \"student@test.com\",\n  \"username\": \"student1\",\n  \"password\": \"password123\",\n  \"first_name\": \"Anna\",\n  \"last_name\": \"Smith\"\n}" }
+    },
+    {
+      "_id": "req_login", "_type": "request", "parentId": "fld_auth",
+      "name": "Login", "method": "POST", "url": "{{ base_url }}/auth/login",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"email\": \"student@test.com\",\n  \"password\": \"password123\"\n}" }
+    },
+    {
+      "_id": "req_refresh", "_type": "request", "parentId": "fld_auth",
+      "name": "Refresh Token", "method": "POST", "url": "{{ base_url }}/auth/refresh",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"refresh_token\": \"{{ refresh_token }}\"\n}" }
+    },
+    {
+      "_id": "req_logout", "_type": "request", "parentId": "fld_auth",
+      "name": "Logout", "method": "POST", "url": "{{ base_url }}/auth/logout",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }, { "name": "Authorization", "value": "Bearer {{ access_token }}" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"refresh_token\": \"{{ refresh_token }}\"\n}" }
+    },
+
+    {
+      "_id": "req_get_me", "_type": "request", "parentId": "fld_users",
+      "name": "Get My Profile", "method": "GET", "url": "{{ base_url }}/users/me",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ access_token }}" }], "body": {}
+    },
+    {
+      "_id": "req_update_me", "_type": "request", "parentId": "fld_users",
+      "name": "Update My Profile", "method": "PATCH", "url": "{{ base_url }}/users/me",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }, { "name": "Authorization", "value": "Bearer {{ access_token }}" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"first_name\": \"Anna\",\n  \"last_name\": \"Updated\"\n}" }
+    },
+    {
+      "_id": "req_list_users", "_type": "request", "parentId": "fld_users",
+      "name": "List All Users (Admin)", "method": "GET", "url": "{{ base_url }}/users/?skip=0&limit=20",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ access_token }}" }], "body": {}
+    },
+    {
+      "_id": "req_admin_update_user", "_type": "request", "parentId": "fld_users",
+      "name": "Ban / Change Role (Admin)", "method": "PATCH", "url": "{{ base_url }}/users/{{ user_id }}/admin",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }, { "name": "Authorization", "value": "Bearer {{ access_token }}" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"is_active\": false,\n  \"role\": \"instructor\"\n}" }
+    },
+
+    {
+      "_id": "req_list_categories", "_type": "request", "parentId": "fld_categories",
+      "name": "List Categories", "method": "GET", "url": "{{ base_url }}/categories/",
+      "headers": [], "body": {}
+    },
+    {
+      "_id": "req_create_category", "_type": "request", "parentId": "fld_categories",
+      "name": "Create Category (Admin)", "method": "POST", "url": "{{ base_url }}/categories/",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }, { "name": "Authorization", "value": "Bearer {{ access_token }}" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"name\": \"Programming\",\n  \"description\": \"Programming courses\"\n}" }
+    },
+    {
+      "_id": "req_delete_category", "_type": "request", "parentId": "fld_categories",
+      "name": "Delete Category (Admin)", "method": "DELETE", "url": "{{ base_url }}/categories/{{ category_id }}",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ access_token }}" }], "body": {}
+    },
+
+    {
+      "_id": "req_list_courses", "_type": "request", "parentId": "fld_courses",
+      "name": "List Courses (search + filter + sort)", "method": "GET",
+      "url": "{{ base_url }}/courses/?search=python&sort_by=price&order=asc&skip=0&limit=20",
+      "headers": [], "body": {}
+    },
+    {
+      "_id": "req_get_course", "_type": "request", "parentId": "fld_courses",
+      "name": "Get Course by ID", "method": "GET", "url": "{{ base_url }}/courses/{{ course_id }}",
+      "headers": [], "body": {}
+    },
+    {
+      "_id": "req_create_course", "_type": "request", "parentId": "fld_courses",
+      "name": "Create Course (Instructor)", "method": "POST", "url": "{{ base_url }}/courses/",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }, { "name": "Authorization", "value": "Bearer {{ access_token }}" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"title\": \"Python Basics\",\n  \"description\": \"Learn Python from scratch\",\n  \"price\": 29.99,\n  \"category_id\": \"{{ category_id }}\"\n}" }
+    },
+    {
+      "_id": "req_update_course", "_type": "request", "parentId": "fld_courses",
+      "name": "Update Course (Instructor)", "method": "PATCH", "url": "{{ base_url }}/courses/{{ course_id }}",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }, { "name": "Authorization", "value": "Bearer {{ access_token }}" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"title\": \"Python Advanced\",\n  \"price\": 49.99\n}" }
+    },
+    {
+      "_id": "req_publish_course", "_type": "request", "parentId": "fld_courses",
+      "name": "Publish Course (Instructor)", "method": "POST", "url": "{{ base_url }}/courses/{{ course_id }}/publish",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ access_token }}" }], "body": {}
+    },
+    {
+      "_id": "req_delete_course", "_type": "request", "parentId": "fld_courses",
+      "name": "Delete Course (Instructor/Admin)", "method": "DELETE", "url": "{{ base_url }}/courses/{{ course_id }}",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ access_token }}" }], "body": {}
+    },
+
+    {
+      "_id": "req_list_lessons", "_type": "request", "parentId": "fld_lessons",
+      "name": "List Lesson Titles (Guest)", "method": "GET", "url": "{{ base_url }}/courses/{{ course_id }}/lessons/",
+      "headers": [], "body": {}
+    },
+    {
+      "_id": "req_get_lesson", "_type": "request", "parentId": "fld_lessons",
+      "name": "Get Full Lesson (Enrolled)", "method": "GET", "url": "{{ base_url }}/courses/{{ course_id }}/lessons/{{ lesson_id }}",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ access_token }}" }], "body": {}
+    },
+    {
+      "_id": "req_create_lesson", "_type": "request", "parentId": "fld_lessons",
+      "name": "Create Lesson (Instructor)", "method": "POST", "url": "{{ base_url }}/courses/{{ course_id }}/lessons/",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }, { "name": "Authorization", "value": "Bearer {{ access_token }}" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"title\": \"Introduction to Python\",\n  \"content\": \"Python is a high-level language...\",\n  \"video_url\": \"https://youtube.com/watch?v=example\",\n  \"order\": 1\n}" }
+    },
+    {
+      "_id": "req_update_lesson", "_type": "request", "parentId": "fld_lessons",
+      "name": "Update Lesson (Instructor)", "method": "PATCH", "url": "{{ base_url }}/courses/{{ course_id }}/lessons/{{ lesson_id }}",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }, { "name": "Authorization", "value": "Bearer {{ access_token }}" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"title\": \"Updated Title\",\n  \"order\": 2\n}" }
+    },
+
+    {
+      "_id": "req_enroll", "_type": "request", "parentId": "fld_enrollments",
+      "name": "Enroll in Course (Student)", "method": "POST", "url": "{{ base_url }}/enrollments/courses/{{ course_id }}",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ access_token }}" }], "body": {}
+    },
+    {
+      "_id": "req_my_enrollments", "_type": "request", "parentId": "fld_enrollments",
+      "name": "My Enrollments", "method": "GET", "url": "{{ base_url }}/enrollments/me",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ access_token }}" }], "body": {}
+    },
+    {
+      "_id": "req_complete_enrollment", "_type": "request", "parentId": "fld_enrollments",
+      "name": "Complete Enrollment", "method": "POST", "url": "{{ base_url }}/enrollments/{{ enrollment_id }}/complete",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ access_token }}" }], "body": {}
+    },
+    {
+      "_id": "req_cancel_enrollment", "_type": "request", "parentId": "fld_enrollments",
+      "name": "Cancel Enrollment", "method": "POST", "url": "{{ base_url }}/enrollments/{{ enrollment_id }}/cancel",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ access_token }}" }], "body": {}
+    },
+
+    {
+      "_id": "req_list_assignment_titles", "_type": "request", "parentId": "fld_assignments",
+      "name": "List Assignment Titles (Guest)", "method": "GET", "url": "{{ base_url }}/courses/{{ course_id }}/assignments/",
+      "headers": [], "body": {}
+    },
+    {
+      "_id": "req_create_assignment", "_type": "request", "parentId": "fld_assignments",
+      "name": "Create Assignment (Instructor)", "method": "POST", "url": "{{ base_url }}/courses/{{ course_id }}/assignments/",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }, { "name": "Authorization", "value": "Bearer {{ access_token }}" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"title\": \"Homework 1\",\n  \"description\": \"Write a Python script\",\n  \"due_date\": \"2026-04-01T23:59:00\",\n  \"max_score\": 100\n}" }
+    },
+    {
+      "_id": "req_delete_assignment", "_type": "request", "parentId": "fld_assignments",
+      "name": "Delete Assignment (Instructor)", "method": "DELETE", "url": "{{ base_url }}/courses/{{ course_id }}/assignments/{{ assignment_id }}",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ access_token }}" }], "body": {}
+    },
+
+    {
+      "_id": "req_submit", "_type": "request", "parentId": "fld_submissions",
+      "name": "Submit Assignment (Student)", "method": "POST",
+      "url": "{{ base_url }}/courses/{{ course_id }}/assignments/{{ assignment_id }}/submissions",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }, { "name": "Authorization", "value": "Bearer {{ access_token }}" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"content\": \"My solution: print('Hello World')\"\n}" }
+    },
+    {
+      "_id": "req_my_submissions", "_type": "request", "parentId": "fld_submissions",
+      "name": "My Submissions", "method": "GET", "url": "{{ base_url }}/submissions/me",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ access_token }}" }], "body": {}
+    },
+    {
+      "_id": "req_grade_submission", "_type": "request", "parentId": "fld_submissions",
+      "name": "Grade Submission (Instructor)", "method": "PATCH", "url": "{{ base_url }}/submissions/{{ submission_id }}/grade",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }, { "name": "Authorization", "value": "Bearer {{ access_token }}" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"score\": 85,\n  \"feedback\": \"Good work!\"\n}" }
+    },
+
+    {
+      "_id": "req_list_reviews", "_type": "request", "parentId": "fld_reviews",
+      "name": "List Reviews (Guest)", "method": "GET", "url": "{{ base_url }}/courses/{{ course_id }}/reviews/",
+      "headers": [], "body": {}
+    },
+    {
+      "_id": "req_create_review", "_type": "request", "parentId": "fld_reviews",
+      "name": "Create Review (Enrolled Student)", "method": "POST", "url": "{{ base_url }}/courses/{{ course_id }}/reviews/",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }, { "name": "Authorization", "value": "Bearer {{ access_token }}" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"rating\": 5,\n  \"comment\": \"Excellent course!\"\n}" }
+    },
+    {
+      "_id": "req_update_review", "_type": "request", "parentId": "fld_reviews",
+      "name": "Update Review", "method": "PATCH", "url": "{{ base_url }}/courses/{{ course_id }}/reviews/{{ review_id }}",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }, { "name": "Authorization", "value": "Bearer {{ access_token }}" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"rating\": 4,\n  \"comment\": \"Good, but needs more examples.\"\n}" }
+    },
+    {
+      "_id": "req_delete_review", "_type": "request", "parentId": "fld_reviews",
+      "name": "Delete Review", "method": "DELETE", "url": "{{ base_url }}/courses/{{ course_id }}/reviews/{{ review_id }}",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ access_token }}" }], "body": {}
+    }
+  ]
+}
