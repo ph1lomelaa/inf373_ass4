@@ -1,22 +1,22 @@
-# Online Learning Platform API
+# Universal LLM-Powered Data Assistant
 
-Backend API for an online learning platform with authentication, course management, enrollments, assignments, submissions, and reviews.
+Backend MVP for ULDA, an AI assistant that ingests enterprise documents and lets users ask natural-language questions across connected data sources.
 
 ## Problem Statement
 
-Online learning systems need a clear backend for managing users, courses, lessons, enrollments, and assessment workflows. Without a structured API, it becomes difficult to support role-based access, course publishing, student progress, and instructor review processes consistently.
+Enterprise data is usually scattered across PDFs, spreadsheets, documents, and databases. ULDA solves this by creating a single conversational interface that ingests source data, indexes its content, and returns contextual answers with source citations.
 
 ## Features
 
-- JWT-based authentication with access and refresh tokens
-- Role-based access control for students, instructors, and admins
-- Category and course management
-- Lesson and assignment management inside courses
-- Student enrollments and completion tracking
-- Assignment submission and instructor grading
-- Course review system
-- Alembic migrations for database schema management
-- Insomnia collection and planning documents in `docs/`
+- Upload and ingest `TXT`, `PDF`, `CSV`, `DOCX`, and `XLSX` sources
+- Connect a PostgreSQL source and ingest table/schema summaries
+- Automatic text extraction and chunking
+- Source and document catalog endpoints
+- Conversation storage and message history
+- ChromaDB-backed chunk storage and retrieval
+- RAG-based chat endpoint with citation-ready responses
+- Optional OpenAI response generation when `ULDA_OPENAI_API_KEY` is configured
+- Local SQLite default setup for quick MVP development
 
 ## Installation
 
@@ -28,19 +28,18 @@ Online learning systems need a clear backend for managing users, courses, lesson
 pip install -r requirements.txt
 ```
 
-4. Create a `.env` file in the project root:
+4. Optionally create a `.env` file in the project root:
 
 ```env
-DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/online_learning
-JWT_SECRET_KEY=your-secret-key
-REDIS_URL=redis://localhost:6379
+ULDA_APP_DATABASE_URL=sqlite:///./ulda.db
+ULDA_UPLOAD_DIR=assets/uploads
+ULDA_CHROMA_PATH=assets/chroma
+ULDA_OPENAI_API_KEY=your-api-key
 ```
 
-5. Run migrations:
-
-```bash
-alembic upgrade head
-```
+The app stores application entities in the SQL database and keeps chunks/embeddings in ChromaDB.
+For a real LLM response path, set `ULDA_OPENAI_API_KEY`. Otherwise ULDA uses local deterministic embeddings.
+In this current Python 3.14 environment, the vector layer automatically falls back to a local persistent store because Chroma's Python package is not fully compatible here. On Python 3.11/3.12, the same abstraction uses ChromaDB directly.
 
 ## Usage
 
@@ -54,15 +53,16 @@ Open the API docs at `http://127.0.0.1:8000/docs`.
 
 Useful endpoints:
 
-- `POST /api/v1/auth/register`
-- `POST /api/v1/auth/login`
-- `GET /api/v1/courses/`
-- `POST /api/v1/enrollments/courses/{course_id}`
-- `POST /api/v1/courses/{course_id}/assignments/`
+- `POST /api/v1/sources/upload`
+- `POST /api/v1/sources/postgresql`
+- `GET /api/v1/sources/`
+- `POST /api/v1/conversations/`
+- `POST /api/v1/chat/query`
+- `GET /api/v1/conversations/{conversation_id}/messages`
 
 ## Screenshots
 
-No screenshots are included yet. Add interface or API screenshots to `assets/` if required for submission.
+No screenshots are included yet. The repository includes a demo source file in `assets/demo_company_policy.txt` for local testing.
 
 ## Technology Stack
 
@@ -71,9 +71,18 @@ No screenshots are included yet. Add interface or API screenshots to `assets/` i
 - SQLModel
 - SQLAlchemy
 - PostgreSQL
-- Redis
-- Alembic
-- JWT authentication
+- SQLite fallback for local development
+- ChromaDB
+- Pydantic Settings
+- PyPDF
+- OpenPyXL
+- python-docx
+- OpenAI API
+- PostgreSQL / SQLAlchemy connectors
+
+## Architecture
+
+See [docs/architecture.md](/Users/muslimakosmagambetova/online_learning/docs/architecture.md).
 
 ## Repository Structure
 
@@ -90,3 +99,4 @@ project-root/
 ├── alembic.ini
 └── requirements.txt
 ```
+# ulda
